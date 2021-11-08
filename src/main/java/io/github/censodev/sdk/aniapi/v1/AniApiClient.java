@@ -86,4 +86,22 @@ public class AniApiClient {
         return fetch("song" + filter.toQueryString(), new TypeReference<>() {
         });
     }
+
+    public ApiResponse<GenresResource> getGenres(String version) {
+        return fetch(String.format("resources/%s/0", version), new TypeReference<>() {
+        });
+    }
+
+    public ApiResponse<GenresResource> getGenres() {
+        return getGenres("1.0");
+    }
+
+    public ApiResponse<LocalizationsResource> getLocalizations(String version) {
+        return fetch(String.format("resources/%s/1", version), new TypeReference<>() {
+        });
+    }
+
+    public ApiResponse<LocalizationsResource> getLocalizations() {
+        return getLocalizations("1.0");
+    }
 }
