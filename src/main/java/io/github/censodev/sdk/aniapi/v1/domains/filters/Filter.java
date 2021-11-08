@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.experimental.SuperBuilder;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,6 +42,7 @@ public abstract class Filter {
                 .filter(entry -> entry.getValue() != null)
                 .filter(entry -> !entry.getValue().isBlank())
                 .map(entry -> entry.getKey() + "=" + entry.getValue())
+                .map(q -> URLEncoder.encode(q, StandardCharsets.UTF_8))
                 .collect(Collectors.joining("&"));
     }
 }
