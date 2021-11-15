@@ -17,6 +17,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class AniApiClient {
     private final HttpClient httpClient = HttpClient.newBuilder()
@@ -26,7 +27,7 @@ public class AniApiClient {
     private static final String ENDPOINT = "https://api.aniapi.com/v1/";
 
     @SneakyThrows
-    private <T> T fetch(String method, String uri, Object body, TypeReference<T> resTypeRef) {
+    private <T> CompletableFuture<T> fetch(String method, String uri, Object body, TypeReference<T> resTypeRef) {
         var mapper = JsonMapper.builder()
                 .findAndAddModules()
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -49,59 +50,66 @@ public class AniApiClient {
                                 .map(HttpRequest.BodyPublishers::ofString)
                                 .orElse(HttpRequest.BodyPublishers.noBody()))
                 .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(response.body(), resTypeRef);
+        return httpClient
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApplyAsync(res -> {
+                    try {
+                        return mapper.readValue(res.body(), resTypeRef);
+                    } catch (JsonProcessingException e) {
+                        return null;
+                    }
+                });
     }
 
-    private <T> T fetch(String uri, TypeReference<T> resTypeRef) {
+    private <T> CompletableFuture<T> fetch(String uri, TypeReference<T> resTypeRef) {
         return fetch("GET", uri, null, resTypeRef);
     }
 
-    public ApiResponse<Anime> getAnime(Long id) {
+    public CompletableFuture<ApiResponse<Anime>> getAnime(Long id) {
         return fetch("anime/" + id, new TypeReference<>() {
         });
     }
 
-    public ApiResponse<Pagination<Anime>> getAnimeList(AnimeFilter filter) {
+    public CompletableFuture<ApiResponse<Pagination<Anime>>> getAnimeList(AnimeFilter filter) {
         return fetch("anime" + filter.toQueryString(), new TypeReference<>() {
         });
     }
 
-    public ApiResponse<Episode> getEpisode(Long id) {
+    public CompletableFuture<ApiResponse<Episode>> getEpisode(Long id) {
         return fetch("episode/" + id, new TypeReference<>() {
         });
     }
 
-    public ApiResponse<Pagination<Episode>> getEpisodeList(EpisodeFilter filter) {
+    public CompletableFuture<ApiResponse<Pagination<Episode>>> getEpisodeList(EpisodeFilter filter) {
         return fetch("episode" + filter.toQueryString(), new TypeReference<>() {
         });
     }
 
-    public ApiResponse<Song> getSong(Long id) {
+    public CompletableFuture<ApiResponse<Song>> getSong(Long id) {
         return fetch("song/" + id, new TypeReference<>() {
         });
     }
 
-    public ApiResponse<Pagination<Song>> getSongList(SongFilter filter) {
+    public CompletableFuture<ApiResponse<Pagination<Song>>> getSongList(SongFilter filter) {
         return fetch("song" + filter.toQueryString(), new TypeReference<>() {
         });
     }
 
-    public ApiResponse<GenresResource> getGenres(String version) {
+    public CompletableFuture<ApiResponse<GenresResource>> getGenres(String version) {
         return fetch(String.format("resources/%s/0", version), new TypeReference<>() {
         });
     }
 
-    public ApiResponse<GenresResource> getGenres() {
+    public CompletableFuture<ApiResponse<GenresResource>> getGenres() {
         return getGenres("1.0");
     }
 
-    public ApiResponse<LocalizationsResource> getLocalizations(String version) {
+    public CompletableFuture<ApiResponse<LocalizationsResource>> getLocalizations(String version) {
         return fetch(String.format("resources/%s/1", version), new TypeReference<>() {
         });
     }
 
-    public ApiResponse<LocalizationsResource> getLocalizations() {
+    public CompletableFuture<ApiResponse<LocalizationsResource>> getLocalizations() {
         return getLocalizations("1.0");
     }
 }

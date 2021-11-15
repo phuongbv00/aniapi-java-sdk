@@ -9,13 +9,15 @@ import io.github.censodev.sdk.aniapi.v1.enums.AnimeStatusEnum;
 import io.github.censodev.sdk.aniapi.v1.enums.SortDirectionEnum;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.ExecutionException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AniApiClientTest {
     AniApiClient client = new AniApiClient();
 
     @Test
-    void testAnimeList() {
+    void testAnimeList() throws ExecutionException, InterruptedException {
         var filter = AnimeFilter
                 .builder()
                 .title("Cowboy Bebop")
@@ -28,7 +30,7 @@ class AniApiClientTest {
                 .genres(new String[]{"Action", "Guns", "Military"})
                 .sort("titles.en", SortDirectionEnum.DESCENDING)
                 .build();
-        var res = client.getAnimeList(filter);
+        var res = client.getAnimeList(filter).get();
         assertNotNull(res);
         assertNotNull(res.getData());
         assertTrue(res.getData() instanceof Pagination);
@@ -36,8 +38,8 @@ class AniApiClientTest {
     }
 
     @Test
-    void testAnime() {
-        var res = client.getAnime(1L);
+    void testAnime() throws ExecutionException, InterruptedException {
+        var res = client.getAnime(1L).get();
         assertNotNull(res);
         assertNotNull(res.getData());
         assertTrue(res.getData() instanceof Anime);
