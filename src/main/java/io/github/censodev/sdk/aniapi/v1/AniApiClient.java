@@ -43,8 +43,8 @@ public class AniApiClient {
                                     try {
                                         return mapper.writeValueAsString(b);
                                     } catch (JsonProcessingException ignored) {
+                                        return null;
                                     }
-                                    return null;
                                 })
                                 .map(HttpRequest.BodyPublishers::ofString)
                                 .orElse(HttpRequest.BodyPublishers.noBody()))
