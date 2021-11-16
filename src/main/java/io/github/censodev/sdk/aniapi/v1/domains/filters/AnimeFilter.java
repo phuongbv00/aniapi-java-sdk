@@ -30,14 +30,14 @@ public class AnimeFilter extends Filter {
     protected Map<String, String> getParamsMap() {
         var params = new HashMap<String, String>();
         params.put("title", title);
-        params.put("anilist_id", anilistId.toString());
-        params.put("mal_id", malId.toString());
-        params.put("formats", Arrays.stream(formats).map(AnimeFormatEnum::ordinal).map(Objects::toString).collect(Collectors.joining(",")));
-        params.put("status", String.valueOf(status.ordinal()));
-        params.put("year", year.toString());
-        params.put("season", String.valueOf(season.ordinal()));
+        params.put("anilist_id", String.valueOf(anilistId));
+        params.put("mal_id", String.valueOf(malId));
+        params.put("formats", Arrays.stream(formats).map(Enum::ordinal).map(String::valueOf).collect(Collectors.joining(",")));
+        params.put("status", Optional.ofNullable(status).map(Enum::ordinal).map(String::valueOf).orElse(null));
+        params.put("year", String.valueOf(year));
+        params.put("season",Optional.ofNullable(season).map(Enum::ordinal).map(String::valueOf).orElse(null));
         params.put("genres", String.join(",", genres));
-        params.put("nsfw", nsfw.toString());
+        params.put("nsfw", String.valueOf(nsfw));
         return params;
     }
 }

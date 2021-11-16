@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -27,12 +28,12 @@ public class SongFilter extends Filter {
     @Override
     protected Map<String, String> getParamsMap() {
         var params = new HashMap<String, String>();
-        params.put("anime_id", animeId.toString());
+        params.put("anime_id", String.valueOf(animeId));
         params.put("title", title);
         params.put("artist", artist);
-        params.put("year", year.toString());
-        params.put("season", String.valueOf(season.ordinal()));
-        params.put("type", String.valueOf(type.ordinal()));
+        params.put("year", String.valueOf(year));
+        params.put("season", Optional.ofNullable(season).map(Enum::ordinal).map(String::valueOf).orElse(null));
+        params.put("type", Optional.ofNullable(type).map(Enum::ordinal).map(String::valueOf).orElse(null));
         return params;
     }
 }

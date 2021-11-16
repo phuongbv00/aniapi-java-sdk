@@ -23,8 +23,8 @@ public class EpisodeFilter extends Filter {
     @Override
     protected Map<String, String> getParamsMap() {
         var params = new HashMap<String, String>();
-        params.put("anime_id", animeId.toString());
-        params.put("number", number.toString());
+        params.put("anime_id", String.valueOf(animeId));
+        params.put("number", String.valueOf(number));
         params.put("source", source);
         params.put("locale", locale);
         return params;
