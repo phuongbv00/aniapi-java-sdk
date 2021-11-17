@@ -11,7 +11,7 @@ A Java SDK for [AniAPI](https://github.com/AniAPI-Team/AniAPI) REST APIs
 ```
 <dependency>
     <groupId>io.github.censodev</groupId>
-    <artifactId>ani-api-sdk</artifactId>
+    <artifactId>aniapi-java-sdk</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
