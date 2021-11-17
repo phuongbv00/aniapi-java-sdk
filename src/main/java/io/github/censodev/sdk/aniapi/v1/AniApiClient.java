@@ -10,6 +10,7 @@ import io.github.censodev.sdk.aniapi.v1.domains.*;
 import io.github.censodev.sdk.aniapi.v1.domains.filters.AnimeFilter;
 import io.github.censodev.sdk.aniapi.v1.domains.filters.EpisodeFilter;
 import io.github.censodev.sdk.aniapi.v1.domains.filters.SongFilter;
+import lombok.Builder;
 import lombok.SneakyThrows;
 
 import java.net.URI;
@@ -19,12 +20,17 @@ import java.net.http.HttpResponse;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+@Builder
 public class AniApiClient {
-    private final HttpClient httpClient = HttpClient.newBuilder()
+    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
 
     private static final String ENDPOINT = "https://api.aniapi.com/v1/";
+
+    private String token;
+
+    private AniApiClient() {}
 
     @SneakyThrows
     private <T> CompletableFuture<T> fetch(String method, String uri, Object body, TypeReference<T> resTypeRef) {
@@ -38,6 +44,7 @@ public class AniApiClient {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(ENDPOINT + uri))
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + token)
                 .method(method,
                         Optional.ofNullable(body)
                                 .map(b -> {
@@ -50,7 +57,7 @@ public class AniApiClient {
                                 .map(HttpRequest.BodyPublishers::ofString)
                                 .orElse(HttpRequest.BodyPublishers.noBody()))
                 .build();
-        return httpClient
+        return HTTP_CLIENT
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApplyAsync(res -> {
                     try {

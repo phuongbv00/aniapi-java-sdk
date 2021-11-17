@@ -11,7 +11,8 @@ import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AniApiClientTest {
-    AniApiClient client = new AniApiClient();
+    AniApiClient client = AniApiClient.builder()
+            .build();
 
     @Test
     void getAnimeList200() throws ExecutionException, InterruptedException {
