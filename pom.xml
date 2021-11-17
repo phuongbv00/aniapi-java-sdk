@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.censodev</groupId>
-    <artifactId>ani-api-sdk</artifactId>
+    <artifactId>aniapi-java-sdk</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>AniAPI SDK</name>
+    <name>AniAPI Java SDK</name>
     <description>A Java SDK for AniAPI REST APIs</description>
     <url>https://github.com/censodev/ani-api-sdk</url>
 
