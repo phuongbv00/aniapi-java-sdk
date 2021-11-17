@@ -1,5 +1,6 @@
 package io.github.censodev.sdk.aniapi.v1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -7,12 +8,12 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.github.censodev.sdk.aniapi.v1.domains.*;
-import io.github.censodev.sdk.aniapi.v1.domains.filters.AnimeFilter;
-import io.github.censodev.sdk.aniapi.v1.domains.filters.EpisodeFilter;
-import io.github.censodev.sdk.aniapi.v1.domains.filters.SongFilter;
+import io.github.censodev.sdk.aniapi.v1.domains.filters.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -32,11 +33,17 @@ public class AniApiClient {
 
     private String token;
 
+    @Builder.Default
+    private Logger logger = LoggerFactory.getLogger(AniApiClient.class);
+
     @SneakyThrows
     private <T> CompletableFuture<T> fetch(String method, String uri, Object body, TypeReference<T> resTypeRef) {
         var mapper = JsonMapper.builder()
                 .findAndAddModules()
+                .enable(SerializationFeature.WRITE_ENUMS_USING_INDEX)
+                .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
                 .build();
@@ -50,7 +57,8 @@ public class AniApiClient {
                                 .map(b -> {
                                     try {
                                         return mapper.writeValueAsString(b);
-                                    } catch (JsonProcessingException ignored) {
+                                    } catch (JsonProcessingException e) {
+                                        logger.error(e.getMessage());
                                         return null;
                                     }
                                 })
@@ -63,6 +71,7 @@ public class AniApiClient {
                     try {
                         return mapper.readValue(res.body(), resTypeRef);
                     } catch (JsonProcessingException e) {
+                        logger.error(e.getMessage());
                         return null;
                     }
                 });
@@ -118,5 +127,55 @@ public class AniApiClient {
 
     public CompletableFuture<ApiResponse<LocalizationsResource>> getLocalizations() {
         return getLocalizations("1.0");
+    }
+
+    public CompletableFuture<ApiResponse<User>> getMe() {
+        return fetch("auth/me", new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<Pagination<User>>> getUserList(UserFilter filter) {
+        return fetch("user" + filter.toQueryString(), new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<User>> getUser(Long id) {
+        return fetch("user/" + id, new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<User>> updateUser(User model) {
+        return fetch("POST", "user", model, new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<String>> deleteUser(Long id) {
+        return fetch("DELETE", "user/" + id, null, new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<Pagination<UserStory>>> getUserStoryList(UserStoryFilter filter) {
+        return fetch("user_story" + filter.toQueryString(), new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<UserStory>> getUserStory(Long id) {
+        return fetch("user_story/" + id, new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<UserStory>> createUserStory(UserStory model) {
+        return fetch("PUT", "user_story", model, new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<UserStory>> updateUserStory(UserStory model) {
+        return fetch("POST", "user_story", model, new TypeReference<>() {
+        });
+    }
+
+    public CompletableFuture<ApiResponse<String>> deleteUserStory(Long id) {
+        return fetch("DELETE", "user_story/" + id, null, new TypeReference<>() {
+        });
     }
 }
