@@ -10,6 +10,7 @@ import io.github.censodev.sdk.aniapi.v1.domains.*;
 import io.github.censodev.sdk.aniapi.v1.domains.filters.AnimeFilter;
 import io.github.censodev.sdk.aniapi.v1.domains.filters.EpisodeFilter;
 import io.github.censodev.sdk.aniapi.v1.domains.filters.SongFilter;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.SneakyThrows;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Builder
+@AllArgsConstructor
 public class AniApiClient {
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
@@ -29,8 +31,6 @@ public class AniApiClient {
     private static final String ENDPOINT = "https://api.aniapi.com/v1/";
 
     private String token;
-
-    private AniApiClient() {}
 
     @SneakyThrows
     private <T> CompletableFuture<T> fetch(String method, String uri, Object body, TypeReference<T> resTypeRef) {
