@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
     <name>AniAPI Java SDK</name>
     <description>A Java SDK for AniAPI REST APIs</description>
-    <url>https://github.com/censodev/ani-api-sdk</url>
+    <url>https://github.com/censodev/aniapi-java-sdk</url>
 
     <licenses>
         <license>
@@ -28,9 +28,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/censodev/ani-api-sdk.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/censodev/ani-api-sdk.git</developerConnection>
-        <url>https://github.com/censodev/ani-api-sdk/tree/master</url>
+        <connection>scm:git:git://github.com/censodev/aniapi-java-sdk.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/censodev/aniapi-java-sdk.git</developerConnection>
+        <url>https://github.com/censodev/aniapi-java-sdk/tree/master</url>
     </scm>
 
     <properties>
