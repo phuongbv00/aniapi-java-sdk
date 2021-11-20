@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AniApiClientTest {
-    final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcxMSIsIm5iZiI6MTYzNzEyNTU1MSwiZXhwIjoxNjM5NzE3NTUxLCJpYXQiOjE2MzcxMjU1NTF9.t28MCOeYNI6xt5W4AtLgx8d6t6XjBIC3uHBKNWfLiUI";
+    final String token = "";
     AniApiClient client = AniApiClient.builder()
             .token(token)
             .build();

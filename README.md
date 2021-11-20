@@ -12,7 +12,7 @@ A Java SDK for [AniAPI](https://github.com/AniAPI-Team/AniAPI) REST APIs
 <dependency>
     <groupId>io.github.censodev</groupId>
     <artifactId>aniapi-java-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 ### Install with Maven CLI
