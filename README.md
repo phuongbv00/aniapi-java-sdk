@@ -19,3 +19,22 @@ A Java SDK for [AniAPI](https://github.com/AniAPI-Team/AniAPI) REST APIs
 ```
 mvn install
 ```
+
+## Usages
+```java
+var client = AniApiClient.builder().build();
+
+var filter = AnimeFilter
+        .builder()
+        .title("Cowboy Bebop")
+        .anilistId(1L)
+        .malId(1L)
+        .formats(new AnimeFormatEnum[]{AnimeFormatEnum.TV, AnimeFormatEnum.TV_SHORT})
+        .status(AnimeStatusEnum.FINISHED)
+        .year(1998)
+        .season(AnimeSeasonEnum.SPRING)
+        .genres(new String[]{"Action", "Guns", "Military"})
+        .sort("titles.en", SortDirectionEnum.DESCENDING)
+        .build();
+var res = client.getAnimeList(filter).get();
+```
